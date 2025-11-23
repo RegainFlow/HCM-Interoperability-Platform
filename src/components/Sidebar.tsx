@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import {
   PiSquaresFourDuotone,
   PiGitMergeDuotone,
@@ -21,10 +22,10 @@ export const Sidebar: React.FC = () => {
       </div>
 
       <nav className="flex-1 px-4 py-6 space-y-2">
-        <NavItem icon={PiSquaresFourDuotone} label="Dashboard" active />
-        <NavItem icon={PiGitMergeDuotone} label="Pipeline" />
-        <NavItem icon={PiShieldCheckDuotone} label="Validation Rules" />
-        <NavItem icon={PiGearDuotone} label="Settings" />
+        <NavItem to="/" icon={PiSquaresFourDuotone} label="Dashboard" />
+        <NavItem to="/pipeline" icon={PiGitMergeDuotone} label="Pipeline" />
+        <NavItem to="/validation" icon={PiShieldCheckDuotone} label="Validation Rules" />
+        <NavItem to="/settings" icon={PiGearDuotone} label="Settings" />
       </nav>
 
       <div className="p-6 border-t border-[rgba(255,255,255,0.1)]">
@@ -43,23 +44,29 @@ export const Sidebar: React.FC = () => {
 };
 
 interface NavItemProps {
+  to: string;
   icon: React.ElementType;
   label: string;
-  active?: boolean;
 }
 
-const NavItem: React.FC<NavItemProps> = ({ icon: Icon, label, active }) => (
-  <button
-    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 group ${
-      active
+const NavItem: React.FC<NavItemProps> = ({ to, icon: Icon, label }) => (
+  <NavLink
+    to={to}
+    className={({ isActive }) =>
+      `w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 group ${isActive
         ? 'bg-[rgba(0,214,203,0.15)] text-[#00d6cb] border border-[rgba(0,214,203,0.2)] shadow-[0_0_10px_rgba(0,214,203,0.2)]'
         : 'text-[#a6a6a6] hover:bg-[rgba(255,255,255,0.05)] hover:text-white'
-    }`}
+      }`
+    }
   >
-    <Icon
-      size={20}
-      className={active ? 'drop-shadow-[0_0_5px_rgba(0,214,203,0.5)]' : ''}
-    />
-    <span className="font-medium text-sm">{label}</span>
-  </button>
+    {({ isActive }) => (
+      <>
+        <Icon
+          size={20}
+          className={isActive ? 'drop-shadow-[0_0_5px_rgba(0,214,203,0.5)]' : ''}
+        />
+        <span className="font-medium text-sm">{label}</span>
+      </>
+    )}
+  </NavLink>
 );

@@ -25,7 +25,7 @@ export const PipelineVisualizer: React.FC<PipelineVisualizerProps> = ({
         <div className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-[rgba(255,255,255,0.1)] -translate-y-1/2 z-0"></div>
 
         {stages.map((stage, index) => {
-          const isActive = stage.status === 'active';
+          const isActive = stage.status === 'active' || stage.status === 'processing';
           const isCompleted = stage.status === 'completed';
           const isError = stage.status === 'error';
 
@@ -36,15 +36,14 @@ export const PipelineVisualizer: React.FC<PipelineVisualizerProps> = ({
             >
               {/* Node Circle */}
               <div
-                className={`w-14 h-14 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
-                  isActive
-                    ? 'bg-[#121213] border-[#00d6cb] shadow-[0_0_20px_rgba(0,214,203,0.4)] scale-110'
-                    : isCompleted
+                className={`w-14 h-14 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${isActive
+                  ? 'bg-[#121213] border-[#00d6cb] shadow-[0_0_20px_rgba(0,214,203,0.4)] scale-110'
+                  : isCompleted
                     ? 'bg-[#121213] border-[#10b981] shadow-[0_0_10px_rgba(16,185,129,0.2)]'
                     : isError
-                    ? 'bg-[#121213] border-[#ef4444] shadow-[0_0_10px_rgba(239,68,68,0.2)]'
-                    : 'bg-[#1a1a1a] border-[rgba(255,255,255,0.1)]'
-                }`}
+                      ? 'bg-[#121213] border-[#ef4444] shadow-[0_0_10px_rgba(239,68,68,0.2)]'
+                      : 'bg-[#1a1a1a] border-[rgba(255,255,255,0.1)]'
+                  }`}
               >
                 {isActive ? (
                   <PiSpinnerGapBold
@@ -63,9 +62,8 @@ export const PipelineVisualizer: React.FC<PipelineVisualizerProps> = ({
               {/* Label Info */}
               <div className="mt-4 text-center">
                 <h3
-                  className={`font-medium text-sm mb-1 ${
-                    isActive ? 'text-[#00d6cb] text-neon' : 'text-white'
-                  }`}
+                  className={`font-medium text-sm mb-1 ${isActive ? 'text-[#00d6cb] text-neon' : 'text-white'
+                    }`}
                 >
                   {stage.name}
                 </h3>
@@ -80,15 +78,14 @@ export const PipelineVisualizer: React.FC<PipelineVisualizerProps> = ({
                 </div>
               </div>
 
-              {/* Progress Bar (Mobile only visible, or decorative) */}
-              {isActive && (
+              {/* Progress Bar */}
+              {(isActive || isCompleted) && (
                 <div className="absolute -bottom-2 w-full max-w-[80px] h-1 bg-gray-800 rounded-full overflow-hidden mt-2">
                   <div
-                    className="h-full bg-[#00d6cb] animate-pulse"
+                    className={`h-full bg-[#00d6cb] ${isActive ? 'animate-pulse' : ''}`}
                     style={{
-                      width: `${
-                        (stage.itemsProcessed / stage.totalItems) * 100
-                      }%`
+                      width: `${isCompleted ? 100 : (stage.itemsProcessed / stage.totalItems) * 100
+                        }%`
                     }}
                   ></div>
                 </div>
